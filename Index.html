@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Botalya - Restez informé</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #F5F1E8;
+    color: #4A4A4A;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 40px 32px;
+    box-shadow: 0 8px 30px rgba(44, 95, 45, 0.12);
+    text-align: center;
+  }
+  .leaf {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 22px;
+    color: #2C5F2D;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #4A4A4A;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #A8B88C;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #4A4A4A;
+    background: #F5F1E8;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus {
+    border-color: #2C5F2D;
+  }
+  button {
+    margin-top: 6px;
+    padding: 14px;
+    background: #2C5F2D;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.3px;
+  }
+  button:hover:not(:disabled) {
+    background: #244d25;
+  }
+  button:disabled {
+    background: #A8B88C;
+    cursor: not-allowed;
+  }
+  .success {
+    display: none;
+    text-align: center;
+  }
+  .success.show {
+    display: block;
+  }
+  .success .leaf { font-size: 48px; }
+  .success h1 { margin-bottom: 10px; }
+  .success p { font-size: 14px; color: #4A4A4A; line-height: 1.6; }
+  .error-msg {
+    color: #b03a3a;
+    font-size: 13px;
+    display: none;
+  }
+  .footer-note {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #A8B88C;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="formView">
+    <div class="leaf">🌿</div>
+    <h1>Restez informé des nouveautés</h1>
+    <p class="subtitle">Terrariums, ateliers, nouvelles pièces uniques &mdash; laissez vos coordonnées pour être prévenu en priorité.</p>
+    <form id="signupForm" action="https://formspree.io/f/mnjeydkk" method="POST">
+      <input type="text" name="name" id="name" placeholder="Nom" required>
+      <input type="email" name="email" id="email" placeholder="Email" required>
+      <input type="tel" name="phone" id="phone" placeholder="Téléphone (optionnel)">
+      <p class="error-msg" id="errorMsg">Une erreur est survenue, réessayez.</p>
+      <button type="submit" id="submitBtn">M'inscrire</button>
+    </form>
+    <p class="footer-note">Botalya · Royan</p>
+  </div>
+
+  <div class="success" id="successView">
+    <div class="leaf">✓</div>
+    <h1>Merci !</h1>
+    <p>Vous serez prévenu(e) dès qu'il y a du nouveau chez Botalya.</p>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('signupForm');
+const btn = document.getElementById('submitBtn');
+const errorMsg = document.getElementById('errorMsg');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorMsg.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Envoi...';
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error('Erreur envoi');
+
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').classList.add('show');
+  } catch (err) {
+    console.error(err);
+    errorMsg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = "M'inscrire";
+  }
+});
+</script>
+
+</body>
+</html>
